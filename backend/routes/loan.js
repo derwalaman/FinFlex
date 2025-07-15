@@ -13,7 +13,6 @@ class MinHeap {
 
     extractMin() {
         if (this.heap.length === 0) return null;
-
         const min = this.heap[0];
         const last = this.heap.pop();
 
@@ -72,6 +71,7 @@ class MinHeap {
 function calculateLoanRepayment(loans, totalPayment) {
     const minHeap = new MinHeap();
     const remainingLoans = [];
+    const paidLoans = [];
 
     loans.forEach((loan) => {
         if (typeof loan.amount !== 'number' || typeof loan.interestRate !== 'number') {
@@ -80,45 +80,55 @@ function calculateLoanRepayment(loans, totalPayment) {
         if (loan.amount <= 0 || loan.interestRate < 0) {
             throw new Error('Invalid loan data: amount must be positive and interestRate non-negative.');
         }
-        minHeap.insert(loan);
+        minHeap.insert({ ...loan }); // avoid mutating input
     });
 
     let totalRepayment = 0;
     let remainingPayment = totalPayment;
-    let paidLoans = [];
 
-    // Process loans and determine remaining ones
     while (remainingPayment > 0 && !minHeap.isEmpty()) {
         const loan = minHeap.extractMin();
-        const interestPayment = loan.amount * loan.interestRate;
+        const interest = loan.amount * loan.interestRate;
+        const fullPayment = loan.amount + interest;
 
-        if (remainingPayment >= loan.amount) {
-            // Fully pay off the loan
-            totalRepayment += loan.amount + interestPayment;
-            paidLoans.push({ ...loan, paidAmount: loan.amount + interestPayment });
-            remainingPayment -= loan.amount;
+        if (remainingPayment >= fullPayment) {
+            // Fully repay loan with interest
+            remainingPayment -= fullPayment;
+            totalRepayment += fullPayment;
+            paidLoans.push({ ...loan, paidAmount: fullPayment, fullyPaid: true });
         } else {
-            // Partially pay the loan
-            totalRepayment += remainingPayment + (remainingPayment * loan.interestRate);
-            paidLoans.push({ ...loan, paidAmount: remainingPayment + (remainingPayment * loan.interestRate) });
-            remainingPayment = 0;
-        }
+            // Can't pay full loan, pay as much as possible
+            // Distribute remainingPayment into principal and interest proportionally
 
-        if (loan.amount > remainingPayment) {
-            loan.amount -= remainingPayment;
+            const proportion = remainingPayment / fullPayment;
+            const partialPrincipal = loan.amount * proportion;
+            const partialInterest = interest * proportion;
+            const paidAmount = partialPrincipal + partialInterest;
+
+            totalRepayment += paidAmount;
+
+            paidLoans.push({
+                ...loan,
+                paidAmount: paidAmount,
+                fullyPaid: false,
+            });
+
+            loan.amount -= partialPrincipal;
             remainingLoans.push(loan);
+
+            remainingPayment = 0; // All used
         }
     }
 
-    const isFullyPaid = remainingLoans.length === 0;
+    const isFullyPaid = minHeap.isEmpty() && remainingLoans.length === 0;
+
     return {
-        totalRepayment: Math.min(totalRepayment, totalPayment), // Ensure total repayment doesn't exceed total payment
-        remainingLoans,  // Loans that are still remaining
-        paidLoans,       // Loans that have been partially or fully paid off
-        isFullyPaid,     // Whether all loans are fully paid
+        totalRepayment,
+        remainingLoans,
+        paidLoans,
+        isFullyPaid
     };
 }
-
 
 // Route to handle the loan scheduler API
 router.post('/scheduler', (req, res) => {
@@ -131,7 +141,6 @@ router.post('/scheduler', (req, res) => {
 
         const repaymentResult = calculateLoanRepayment(loans, totalPayment);
 
-        // Send the result with repayment details and loan statuses
         res.json(repaymentResult);
     } catch (error) {
         res.status(400).json({ error: error.message });
