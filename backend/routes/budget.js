@@ -9,7 +9,7 @@ class Node {
     }
 }
 
-class RedBlackTree {
+class BinarySearchTree {
     constructor() {
         this.root = null;
     }
@@ -36,26 +36,35 @@ class RedBlackTree {
     }
 }
 
-function analyzeBudgetWithRBTree(income, transactions) {
+function analyzeBudgetWithTree(income, transactions) {
     const budgetRule = {
         essentials: income * 0.5,
         wants: income * 0.3,
         savings: income * 0.2,
     };
 
-    let totalEssentials = 0, totalWants = 0, totalSavings = 0;
-    const rbTree = new RedBlackTree();
+    let totalEssentials = 0;
+    let totalWants = 0;
+    let totalSavings = 0;
+
+    const tree = new BinarySearchTree();
     const recurringExpenses = new Set();
 
-    transactions.forEach(({ amount, category, description }) => {
+    transactions.forEach((transaction) => {
+        const { amount, category, description } = transaction;
+
+        if (typeof amount !== 'number' || typeof category !== 'string' || typeof description !== 'string') {
+            throw new Error('Invalid transaction format. Each transaction must have amount (number), category (string), and description (string).');
+        }
+
         if (category === "Essentials") totalEssentials += amount;
         else if (category === "Wants") totalWants += amount;
         else if (category === "Savings") totalSavings += amount;
 
-        if (rbTree.search(description)) {
+        if (tree.search(description)) {
             recurringExpenses.add(description);
         } else {
-            rbTree.insert(description);
+            tree.insert(description);
         }
     });
 
@@ -65,20 +74,29 @@ function analyzeBudgetWithRBTree(income, transactions) {
     if (totalSavings < budgetRule.savings) recommendations.push("Increase your savings contributions.");
 
     return {
-        spendingSummary: { essentials: totalEssentials, wants: totalWants, savings: totalSavings },
+        spendingSummary: {
+            essentials: totalEssentials,
+            wants: totalWants,
+            savings: totalSavings
+        },
         recurringExpenses: Array.from(recurringExpenses),
         recommendations,
     };
 }
 
 router.post('/analyze', (req, res) => {
-    const { income, transactions } = req.body;
-    if (!income || !Array.isArray(transactions)) {
-        return res.status(400).json({ error: 'Invalid input!' });
-    }
+    try {
+        const { income, transactions } = req.body;
 
-    const analysis = analyzeBudgetWithRBTree(income, transactions);
-    res.json(analysis);
+        if (typeof income !== 'number' || income <= 0 || !Array.isArray(transactions)) {
+            return res.status(400).json({ error: 'Invalid input! Income must be a positive number and transactions must be an array.' });
+        }
+
+        const analysis = analyzeBudgetWithTree(income, transactions);
+        res.json(analysis);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 });
 
 module.exports = router;
