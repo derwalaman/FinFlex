@@ -14,7 +14,7 @@ FinFlex is a comprehensive web application designed to simplify personal and ent
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Anurag-Kumar9/finflex.git
+   git clone https://github.com/derwalaman/FinFlex.git
 
 2. Install the depencies:
    ```bash
