@@ -1,0 +1,28 @@
+{
+  "name": "finflex",
+  "version": "1.0.0",
+  "description": "A comprehensive financial system",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "keywords": [
+    "finance",
+    "financial system",
+    "cashflow",
+    "tax",
+    "money",
+    "budget"
+  ],
+  "author": "Anurag Kumar, Bhavudheen, Aman Derwal",
+  "license": "MIT"
+}

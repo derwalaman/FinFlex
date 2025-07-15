@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Scheduler</title>
+    <link rel="stylesheet" href="styles/loan.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../assets/FinFlex_icon.ico" alt="FinFlex Logo" class="logo">
+            <h1>FinFlex</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tools.html">Tools</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class = 'head'>Loan Scheduler</div>
+        <form id="loanForm">
+            <div id="loanInputs">
+                <div class="loan-entry">
+                    <label for="amount-1">Loan Amount:</label>
+                    <input type="number" id="amount-1" class="loan-amount" placeholder="e.g., 10000" required>
+
+                    <label for="interestRate-1">Interest Rate (%):</label>
+                    <input type="number" id="interestRate-1" class="loan-interest" placeholder="e.g., 12" required>
+                </div>
+            </div>
+
+            <button type="button" id="addLoan">Add Another Loan</button>
+
+            <label for="totalPayment">Enter Total Payment:</label>
+            <input type="number" id="totalPayment" placeholder="e.g., 15000" required>
+
+            <button type="submit">Calculate Repayment</button>
+        </form>
+
+        <h2>Results</h2>
+        <div id="result">Results will be displayed here.</div>
+    </main>
+    <footer>
+        <p>&copy; 2024 FinFlex. All rights reserved.</p>
+    </footer>
+    <script src = 'scripts/loan.js'></script>
+</body>
+</html>

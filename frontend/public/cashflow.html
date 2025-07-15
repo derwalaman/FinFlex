@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Flow Optimizer</title>
+    <link rel="stylesheet" href="styles/cashflow.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="../assets/FinFlex_icon.ico" alt="FinFlex Logo" class="logo">
+            <h1>FinFlex</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tools.html">Tools</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="tools">
+            <h2>Cash Flow Tools</h2>
+            <div class="card-container">
+            </div>
+        </section>
+
+        <section class="transaction-form">
+            <h2>Add Transaction</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="from">From:</label>
+                    <input type="text" id="from" placeholder="Person paying" required>
+                </div>
+                <div class="form-group">
+                    <label for="to">To:</label>
+                    <input type="text" id="to" placeholder="Person receiving" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" id="amount" placeholder="Enter amount" required>
+                </div>
+                <button type="submit" class="btn">Add Transaction</button>
+            </form>
+        </section>
+
+        <section class="transaction-list">
+            <h2>Transactions</h2>
+            <table id="transactionTable">
+                <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Transactions will be dynamically added here -->
+                </tbody>
+            </table>
+            <button id="resetBtn" class="btn reset">Reset Transactions</button>
+        </section>
+
+        <section class="output-section">
+            <h2>Optimized Cash Flow</h2>
+            <button id="optimizeBtn" class="btn">Optimize Cash Flow</button>
+            <pre id="output"></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 FinFlex. All rights reserved.</p>
+    </footer>
+
+    <script src = 'scripts/cashflow.js'></script>
+</body>
+</html>
